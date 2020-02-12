@@ -16,7 +16,7 @@ namespace EfEagerLoad.IncludeStrategies
         public PredicateIncludeStrategy(Predicate<string> strategy)
         {
             Guard.IsNotNull(nameof(strategy), strategy);
-            _strategy = (context) => strategy(context.CurrentIncludePath);
+            _strategy = (context) => strategy(context.CurrentIncludePath.ToString());
         }
 
         public override bool ShouldIncludeCurrentNavigation(EagerLoadContext context)

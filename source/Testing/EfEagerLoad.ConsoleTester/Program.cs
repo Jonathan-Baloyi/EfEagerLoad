@@ -22,16 +22,23 @@ namespace EfEagerLoad.ConsoleTester
 
         public static async Task Main(string[] args)
         {
-            //var value = Perf();
+            var value = Bench();
 
-            //if (value == null)
-            //{
-            //    Console.WriteLine();
-            //}
+            if (value == null)
+            {
+                Console.WriteLine();
+            }
 
 
-            Func<Task> runFunc = Run;
-            await runFunc.RunInConsole();
+            //Func<Task> runFunc = Run;
+            //await runFunc.RunInConsole();
+        }
+
+        public static object Bench()
+        {
+            //var 
+
+            return null;
         }
 
         public static object Perf()

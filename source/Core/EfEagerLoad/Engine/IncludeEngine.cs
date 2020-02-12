@@ -12,7 +12,7 @@ namespace EfEagerLoad.Engine
         private static readonly IncludeFinder CachedIncludeBuilder = new IncludeFinder();
 
         private readonly IncludeFinder _includeFinder;
-        private static readonly ConcurrentDictionary<Type, IList<string>> CachedIncludePaths = new ConcurrentDictionary<Type, IList<string>>();
+        private static readonly ConcurrentDictionary<Type, IList<ReadOnlyMemory<char>>> CachedIncludePaths = new ConcurrentDictionary<Type, IList<ReadOnlyMemory<char>>>();
 
         public IncludeEngine() : this(CachedIncludeBuilder) { }
 
@@ -46,7 +46,7 @@ namespace EfEagerLoad.Engine
             return GetQueryableWithIncludePaths(query, context, includePaths);
         }
 
-        private IEnumerable<string> GetPreFilteredIncludePaths(EagerLoadContext context)
+        private IEnumerable<ReadOnlyMemory<char>> GetPreFilteredIncludePaths(EagerLoadContext context)
         {
             switch (context.IncludeExecution)
             {
@@ -75,14 +75,14 @@ namespace EfEagerLoad.Engine
         }
 
         private static IQueryable<TEntity> GetQueryableWithIncludePaths<TEntity>(IQueryable<TEntity> query, 
-            EagerLoadContext context, IEnumerable<string> includeStatements) where TEntity : class
+            EagerLoadContext context, IEnumerable<ReadOnlyMemory<char>> includeStatements) where TEntity : class
         {
             if (context.IncludePathsToInclude.Count == 0) { return query; }
 
             context.IncludeStrategy.FilterIncludePathsBeforeInclude(context);
             context.IncludeStrategy.ExecuteBeforeInclude(context);
 
-            return includeStatements.Aggregate(query, (current, navigationPath) => current.Include(navigationPath));
+            return includeStatements.Aggregate(query, (current, navigationPath) => current.Include(navigationPath.ToString()));
         }
     }
 }

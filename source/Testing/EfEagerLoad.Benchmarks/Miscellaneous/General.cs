@@ -60,6 +60,13 @@ namespace EfEagerLoad.Benchmarks.Miscellaneous
             return bookQuery.EagerLoad(_testDbContext, true).ToArray();
         }
 
+        [Benchmark]
+        public IList<Book> EfEagerLoad_IgnoringIncludePaths()
+        {
+            var bookQuery = new Book[0].AsQueryable();
+            return bookQuery.EagerLoad(_testDbContext, $"{nameof(Book.Author)}.{ nameof(Author.Books)}").ToArray();
+        }
+
 
         [GlobalSetup]
         public void GlobalCleanup()

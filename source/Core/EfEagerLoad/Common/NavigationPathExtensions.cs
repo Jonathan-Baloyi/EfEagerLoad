@@ -6,11 +6,12 @@ namespace EfEagerLoad.Common
     {
         private static readonly char SeparatorCharacter = char.Parse(".");
 
-        public static ReadOnlySpan<char> GetParentIncludePathSpan(this ReadOnlySpan<char> includePath)
+        public static ReadOnlyMemory<char> GetParentIncludePathSpan(this ReadOnlyMemory<char> includePath)
         {
-            if (!includePath.Contains(SeparatorCharacter)) { return string.Empty.ToCharArray(); }
+            var includePathSpan = includePath.Span;
+            if (!includePathSpan.Contains(SeparatorCharacter)) { return string.Empty.ToCharArray(); }
 
-            return includePath.Slice(0, includePath.LastIndexOf("."));
+            return includePath.Slice(0, includePathSpan.LastIndexOf("."));
         }
     }
 }

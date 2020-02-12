@@ -6,9 +6,9 @@ namespace EfEagerLoad.Benchmarks
 {
     public static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<General>();
+            var summary = BenchmarkRunner.Run<IncludeFinderBenchmarks>();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace EfEagerLoad.IncludeStrategies
     {
         public override bool ShouldIncludeCurrentNavigation(EagerLoadContext context)
         {
-            return !context.IncludePathsToIgnore.Any(context.CurrentIncludePath.StartsWith);
+            return !context.IncludePathsToIgnore.Any(path => context.CurrentIncludePath.Span.StartsWith(path.AsSpan()));
         }
     }
 }

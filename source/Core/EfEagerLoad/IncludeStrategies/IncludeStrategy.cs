@@ -17,7 +17,7 @@ namespace EfEagerLoad.IncludeStrategies
         {
             foreach (var navigationPath in context.IncludePathsToInclude.ToArray())
             {
-                if (context.IncludePathsToIgnore.Any(nav => navigationPath.StartsWith(nav)))
+                if (context.IncludePathsToIgnore.Any(nav => navigationPath.Span.StartsWith(nav)))
                 {
                     context.IncludePathsToInclude.Remove(navigationPath);
                 }
@@ -31,7 +31,7 @@ namespace EfEagerLoad.IncludeStrategies
 
             if (!(loggerInject is ILogger logger)) { return; }
 
-            var includePaths = JsonSerializer.Serialize(context.IncludePathsToInclude);
+            var includePaths = JsonSerializer.Serialize(context.IncludePathsToInclude.Select(i => i.ToArray()));
             logger.LogInformation($"{IncludeLogMessage}{context.RootType.Name}: {includePaths}");
 
 

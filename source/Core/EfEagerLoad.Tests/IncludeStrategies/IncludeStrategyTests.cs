@@ -25,7 +25,7 @@ namespace EfEagerLoad.Tests.IncludeStrategies
         {
             var pathsToFilter = new[] { "Book.Author" };
             var context = new EagerLoadContext(Mock.Of<DbContext>(), Mock.Of<IIncludeStrategy>(), pathsToFilter);
-            PathsFound.ForEach(i => context.IncludePathsToInclude.Add(i));
+            PathsFound.ForEach(i => context.IncludePathsToInclude.Add(i.AsMemory()));
             var strategyMock = new Mock<IncludeStrategy>();
             strategyMock.Setup(s => s.FilterIncludePathsBeforeInclude(context)).CallBase();
             var strategy = strategyMock.Object;
@@ -39,8 +39,8 @@ namespace EfEagerLoad.Tests.IncludeStrategies
         public void ExecuteBeforeInclude_WillLogTheIncludePaths_IfaLoggerCanBeObtained()
         {
             var context = new EagerLoadContext(Mock.Of<DbContext>(), Mock.Of<IIncludeStrategy>(),
-                                                rooType: typeof(IncludeStrategyTests));
-            PathsFound.ForEach(i => context.IncludePathsToInclude.Add(i));
+                                                rootType: typeof(IncludeStrategyTests));
+            PathsFound.ForEach(i => context.IncludePathsToInclude.Add(i.AsMemory()));
             
             var strategyMock = new Mock<IncludeStrategy>();
             strategyMock.Setup(s => s.ExecuteBeforeInclude(context)).CallBase();

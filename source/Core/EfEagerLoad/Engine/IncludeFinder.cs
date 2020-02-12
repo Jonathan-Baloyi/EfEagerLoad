@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EfEagerLoad.Common;
 
 namespace EfEagerLoad.Engine
@@ -17,7 +18,32 @@ namespace EfEagerLoad.Engine
             _navigationFinder = navigationFinder;
         }
 
-        public IList<string> BuildIncludePathsForRootType(EagerLoadContext context)
+        public IList<ReadOnlyMemory<char>> BuildIncludePathsForRootType2(EagerLoadContext context)
+        {
+            foreach (var _ in BuildIncludesForEagerLoadContext()) { }
+
+            return context.IncludePathsToInclude;
+
+            IEnumerable<bool> BuildIncludesForEagerLoadContext()
+            {
+                var navigationsToConsider = _navigationFinder.GetNavigationsForType(context, context.CurrentType ?? context.RootType);
+                foreach (var navigation in navigationsToConsider)
+                {
+                    context.SetCurrentNavigation(navigation);
+
+                    if (context.IncludeStrategy.ShouldIncludeCurrentNavigation(context))
+                    {
+                        context.IncludePathsToInclude.Add(context.CurrentIncludePath);
+
+                        foreach (var _ in BuildIncludesForEagerLoadContext()) { yield return default; }
+                    }
+
+                    context.RemoveCurrentNavigation();
+                }
+            }
+        }
+
+        public IList<ReadOnlyMemory<char>> BuildIncludePathsForRootType(EagerLoadContext context)
         {
             BuildIncludesForEagerLoadContext(context);
             return context.IncludePathsToInclude;
@@ -45,5 +71,6 @@ namespace EfEagerLoad.Engine
                 }
             }
         }
+
     }
 }
